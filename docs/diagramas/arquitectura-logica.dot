@@ -1,0 +1,36 @@
+digraph Biblioteca {
+  graph [rankdir=LR, bgcolor="white", pad=0.3, nodesep=0.5, ranksep=0.8, fontname="Arial", label="Arquitectura lógica — Biblioteca con 5 microservicios", labelloc=t, fontsize=20];
+  node [shape=box, style="rounded,filled", fontname="Arial", fontsize=10, margin="0.14,0.10", color="#334155", fillcolor="#F8FAFC"];
+  edge [fontname="Arial", fontsize=8, color="#475569", arrowsize=0.8];
+
+  cliente [label="Cliente\nPostman / aplicación web", fillcolor="#DBEAFE"];
+  gateway [label="API Gateway\n:8080", fillcolor="#BFDBFE"];
+  auth [label="Auth Service\nUsuarios • Roles • JWT\n:8081", fillcolor="#DCFCE7"];
+  catalog [label="Catalog Service\nLibros • Disponibilidad\n:8082", fillcolor="#FEF3C7"];
+  loan [label="Loan Service\nPréstamos • Devoluciones\n:8083", fillcolor="#FCE7F3"];
+  reservation [label="Reservation Service\nReservas • Cancelación\n:8084", fillcolor="#EDE9FE"];
+  review [label="Review Service\nReseñas • Calificación\n:8085", fillcolor="#CCFBF1"];
+
+  authdb [shape=cylinder, label="MySQL\nauth_db", fillcolor="#ECFDF5"];
+  catalogdb [shape=cylinder, label="MySQL\ncatalog_db", fillcolor="#FFFBEB"];
+  loandb [shape=cylinder, label="MySQL\nloan_db", fillcolor="#FDF2F8"];
+  reservationdb [shape=cylinder, label="MySQL\nreservation_db", fillcolor="#F5F3FF"];
+  reviewdb [shape=cylinder, label="MySQL\nreview_db", fillcolor="#F0FDFA"];
+
+  cliente -> gateway [label="HTTP / JSON"];
+  gateway -> auth [label="/api/auth\n/api/users"];
+  gateway -> catalog [label="/api/books"];
+  gateway -> loan [label="/api/loans"];
+  gateway -> reservation [label="/api/reservations"];
+  gateway -> review [label="/api/reviews"];
+
+  auth -> authdb [label="JPA"];
+  catalog -> catalogdb [label="JPA"];
+  loan -> loandb [label="JPA"];
+  reservation -> reservationdb [label="JPA"];
+  review -> reviewdb [label="JPA"];
+
+  loan -> catalog [label="API interna\ncheckout / checkin", style=dashed];
+  reservation -> catalog [label="API interna\nvalidar libro", style=dashed];
+  review -> catalog [label="API interna\nvalidar libro", style=dashed];
+}

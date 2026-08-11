@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: auth-service-auth
+              uri: ${AUTH_SERVICE_URL:http://localhost:8081}
+              predicates:
+                - Path=/api/auth/**
+            - id: auth-service-users
+              uri: ${AUTH_SERVICE_URL:http://localhost:8081}
+              predicates:
+                - Path=/api/users/**
+            - id: catalog-service
+              uri: ${CATALOG_SERVICE_URL:http://localhost:8082}
+              predicates:
+                - Path=/api/books/**
+            - id: loan-service
+              uri: ${LOAN_SERVICE_URL:http://localhost:8083}
+              predicates:
+                - Path=/api/loans/**
+            - id: reservation-service
+              uri: ${RESERVATION_SERVICE_URL:http://localhost:8084}
+              predicates:
+                - Path=/api/reservations/**
+            - id: review-service
+              uri: ${REVIEW_SERVICE_URL:http://localhost:8085}
+              predicates:
+                - Path=/api/reviews/**
+          globalcors:
+            add-to-simple-url-handler-mapping: true
+            cors-configurations:
+              '[/**]':
+                allowedOrigins: "*"
+                allowedMethods: "*"
+                allowedHeaders: "*"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway

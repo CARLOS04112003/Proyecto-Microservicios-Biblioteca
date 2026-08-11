@@ -1,0 +1,16 @@
+VALIDACIÓN REALIZADA
+====================
+
+- 5 microservicios de negocio presentes: auth, catalog, loan, reservation y review.
+- API Gateway presente y configurado para las 5 APIs.
+- 5 bases MySQL y 5 tablas definidas en database/biblioteca_mysql_completo.sql.
+- Todos los POM XML, YAML, OpenAPI YAML y JSON fueron parseados sin errores.
+- No quedan dependencias ni URLs JDBC de PostgreSQL.
+- Todos los imports internos pe.edu.biblioteca.* apuntan a clases existentes.
+- Se verificó el balance sintáctico básico de todos los archivos Java.
+- Colección Postman con 12 solicitudes de flujo completo.
+- Configuraciones compartidas de ejecución para IntelliJ incluidas en .run/.
+
+LIMITACIÓN DEL ENTORNO DE VALIDACIÓN
+------------------------------------
+El entorno donde se preparó este paquete no tenía acceso DNS a Maven Central y tampoco tenía Docker/MySQL instalados. Por ello no fue posible ejecutar aquí `mvn clean verify` ni levantar los contenedores. El proyecto incluye las pruebas y los comandos para hacerlo en un equipo con Internet/JDK 21.

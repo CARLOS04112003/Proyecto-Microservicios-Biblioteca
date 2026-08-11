@@ -1,0 +1,59 @@
+openapi: 3.0.3
+info:
+  title: Biblioteca - Préstamos
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+security: [{bearerAuth: []}]
+paths:
+  /api/loans:
+    post:
+      summary: Registrar préstamo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/BorrowRequest'}
+      responses:
+        '201': {description: Préstamo creado, content: {application/json: {schema: {$ref: '#/components/schemas/Loan'}}}}
+        '409': {description: No disponible o límite alcanzado}
+    get:
+      summary: Listar todos los préstamos (ADMIN o LIBRARIAN)
+      responses:
+        '200': {description: Lista de préstamos}
+  /api/loans/me:
+    get:
+      summary: Listar mis préstamos
+      responses:
+        '200': {description: Lista de préstamos del usuario}
+  /api/loans/{loanId}/return:
+    post:
+      summary: Registrar devolución
+      parameters:
+        - {name: loanId, in: path, required: true, schema: {type: string, format: uuid}}
+      responses:
+        '200': {description: Préstamo devuelto, content: {application/json: {schema: {$ref: '#/components/schemas/Loan'}}}}
+        '409': {description: Ya devuelto}
+components:
+  securitySchemes:
+    bearerAuth: {type: http, scheme: bearer, bearerFormat: JWT}
+  schemas:
+    BorrowRequest:
+      type: object
+      required: [bookId]
+      properties:
+        bookId: {type: string, format: uuid}
+        loanDays: {type: integer, minimum: 1, maximum: 30, default: 14}
+    Loan:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        userId: {type: string, format: uuid}
+        userEmail: {type: string}
+        bookId: {type: string, format: uuid}
+        bookTitle: {type: string}
+        borrowedAt: {type: string, format: date}
+        dueDate: {type: string, format: date}
+        returnedAt: {type: string, format: date, nullable: true}
+        status: {type: string, enum: [ACTIVE, OVERDUE, RETURNED]}
+        createdAt: {type: string, format: date-time}
