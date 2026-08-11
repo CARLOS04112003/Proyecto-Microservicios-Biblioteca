@@ -1,0 +1,33 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: review-service
+  datasource:
+    url: ${DB_URL:jdbc:h2:mem:reviewdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  h2:
+    console:
+      enabled: true
+security:
+  jwt:
+    secret: ${JWT_SECRET:YmlibGlvdGVjYS1kZW1vLWp3dC1zZWNyZXQta2V5LTIwMjYtY2hhbmdlLWluLXByb2R1Y3Rpb24=}
+services:
+  catalog:
+    base-url: ${CATALOG_BASE_URL:http://localhost:8082}
+app:
+  internal-api-key: ${INTERNAL_API_KEY:biblioteca-internal-key-change-me}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method

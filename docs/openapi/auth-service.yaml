@@ -1,0 +1,74 @@
+openapi: 3.0.3
+info:
+  title: Biblioteca - Autenticación
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/auth/register:
+    post:
+      summary: Registrar un miembro
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/RegisterRequest'}
+      responses:
+        '201': {description: Usuario creado, content: {application/json: {schema: {$ref: '#/components/schemas/User'}}}}
+        '409': {description: Correo duplicado}
+  /api/auth/login:
+    post:
+      summary: Iniciar sesión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/LoginRequest'}
+      responses:
+        '200': {description: Token JWT, content: {application/json: {schema: {$ref: '#/components/schemas/TokenResponse'}}}}
+        '403': {description: Credenciales incorrectas}
+  /api/auth/me:
+    get:
+      summary: Obtener el usuario autenticado
+      security: [{bearerAuth: []}]
+      responses:
+        '200': {description: Usuario, content: {application/json: {schema: {$ref: '#/components/schemas/User'}}}}
+  /api/users:
+    get:
+      summary: Listar usuarios (ADMIN)
+      security: [{bearerAuth: []}]
+      responses:
+        '200': {description: Lista de usuarios}
+components:
+  securitySchemes:
+    bearerAuth: {type: http, scheme: bearer, bearerFormat: JWT}
+  schemas:
+    RegisterRequest:
+      type: object
+      required: [fullName, email, password]
+      properties:
+        fullName: {type: string, example: Ana Pérez}
+        email: {type: string, format: email, example: ana@example.com}
+        password: {type: string, minLength: 8, example: Clave123*}
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: {type: string, format: email}
+        password: {type: string}
+    User:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        fullName: {type: string}
+        email: {type: string}
+        role: {type: string, enum: [ADMIN, LIBRARIAN, MEMBER]}
+        active: {type: boolean}
+        createdAt: {type: string, format: date-time}
+    TokenResponse:
+      type: object
+      properties:
+        accessToken: {type: string}
+        tokenType: {type: string, example: Bearer}
+        expiresAt: {type: string, format: date-time}
+        user: {$ref: '#/components/schemas/User'}

@@ -1,0 +1,94 @@
+openapi: 3.0.3
+info:
+  title: Review Service API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8085
+paths:
+  /api/reviews:
+    post:
+      summary: Crear reseña
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReviewRequest'
+      responses:
+        '201': { description: Reseña creada }
+  /api/reviews/me:
+    get:
+      summary: Listar mis reseñas
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Lista de reseñas }
+  /api/reviews/book/{bookId}:
+    get:
+      summary: Listar reseñas de un libro
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: bookId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: Lista de reseñas }
+  /api/reviews/book/{bookId}/summary:
+    get:
+      summary: Obtener promedio de calificación
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: bookId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: Resumen de reseñas }
+  /api/reviews/{id}:
+    put:
+      summary: Editar reseña propia
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateReviewRequest'
+      responses:
+        '200': { description: Reseña actualizada }
+    delete:
+      summary: Eliminar reseña
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204': { description: Reseña eliminada }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    CreateReviewRequest:
+      type: object
+      required: [bookId, rating]
+      properties:
+        bookId: { type: string, format: uuid }
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        comment: { type: string, maxLength: 1000 }
+    UpdateReviewRequest:
+      type: object
+      required: [rating]
+      properties:
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        comment: { type: string, maxLength: 1000 }
