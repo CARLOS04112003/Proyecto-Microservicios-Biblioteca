@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:catalogtest;MODE=MySQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+app:
+  seed:
+    enabled: false
+  internal-api-key: test-key
+security:
+  jwt:
+    secret: YmlibGlvdGVjYS1kZW1vLWp3dC1zZWNyZXQta2V5LTIwMjYtY2hhbmdlLWluLXByb2R1Y3Rpb24=
